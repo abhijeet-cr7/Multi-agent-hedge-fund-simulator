@@ -30,7 +30,7 @@ Financial Data (yfinance)
 |-------|-----------|
 | **Monorepo** | pnpm workspaces + Turborepo |
 | **Backend API** | NestJS (TypeScript) with Prisma ORM |
-| **Frontend** | Next.js 14 (App Router) + Tailwind CSS + Recharts |
+| **Frontend** | Next.js 15 (App Router) + Tailwind CSS + Recharts |
 | **AI Agents** | Python (FastAPI) with LangChain |
 | **Database** | PostgreSQL 16 |
 | **Cache/Queue** | Redis 7 + BullMQ |

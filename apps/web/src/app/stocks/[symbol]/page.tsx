@@ -4,11 +4,11 @@ import { Button } from '@/components/ui/button';
 import { StockChart } from '@/components/charts/stock-chart';
 
 interface StockPageProps {
-  params: { symbol: string };
+  params: Promise<{ symbol: string }>;
 }
 
-export default function StockPage({ params }: StockPageProps) {
-  const { symbol } = params;
+export default async function StockPage({ params }: StockPageProps) {
+  const { symbol } = await params;
 
   const mockMetrics = [
     { label: 'P/E Ratio', value: '28.5' },
