@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  portfolios   Portfolio[]
+}
+
+model Portfolio {
+  id        String    @id @default(cuid())
+  userId    String
+  name      String    @default("My Portfolio")
+  cash      Float     @default(100000)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id])
+  holdings  Holding[]
+  trades    Trade[]
+}
+
+model Holding {
+  id           String    @id @default(cuid())
+  portfolioId  String
+  symbol       String
+  shares       Float
+  avgCostBasis Float
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  portfolio    Portfolio @relation(fields: [portfolioId], references: [id])
+
+  @@unique([portfolioId, symbol])
+}
+
+model Trade {
+  id            String    @id @default(cuid())
+  portfolioId   String
+  symbol        String
+  action        TradeAction
+  shares        Float
+  price         Float
+  totalCost     Float
+  agentDecision Json?
+  executedAt    DateTime  @default(now())
+  portfolio     Portfolio @relation(fields: [portfolioId], references: [id])
+}
+
+model AgentDecision {
+  id         String       @id @default(cuid())
+  agentType  String
+  symbol     String
+  signal     AgentSignal
+  confidence Float
+  reasoning  String
+  metadata   Json?
+  createdAt  DateTime     @default(now())
+}
+
+model StockSnapshot {
+  id        String   @id @default(cuid())
+  symbol    String
+  price     Float
+  open      Float?
+  high      Float?
+  low       Float?
+  volume    Float?
+  marketCap Float?
+  peRatio   Float?
+  createdAt DateTime @default(now())
+
+  @@index([symbol, createdAt])
+}
+
+enum TradeAction {
+  BUY
+  SELL
+}
+
+enum AgentSignal {
+  STRONG_BUY
+  BUY
+  HOLD
+  SELL
+  STRONG_SELL
+}
